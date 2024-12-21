@@ -23,7 +23,7 @@ pub fn hotp(secret: &[u8], counter: u64, digits: usize) -> Result<String> {
 
 pub fn totp(secret: &str, time_step: u64, digits: usize) -> Result<String> {
     let counter = SystemTime::now().duration_since(UNIX_EPOCH).unwrap().as_secs() / time_step;
-    let secret = match base32::decode(base32::Alphabet::RFC4648 { padding: false }, secret) {
+    let secret = match base32::decode(base32::Alphabet::Rfc4648 { padding: false }, secret) {
         None => return Err(Error::message("secret not base32")),
         Some(data) => data,
     };

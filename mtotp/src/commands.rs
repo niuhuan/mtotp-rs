@@ -2,18 +2,19 @@ use clap::Parser;
 
 #[derive(Parser)]
 #[command(bin_name = "mtotp", name = "mtotp")]
-pub(crate) enum MtotpCli {
+pub enum MtotpCli {
     List(ListArgs),
     Add(AddArgs),
     Remove(RemoveArgs),
     Rename(RenameArgs),
 }
 
-#[derive(clap::Args)]
+#[derive(Debug, clap::Args)]
 #[command(about = "List registered totp and codes", long_about = None)]
 pub(crate) struct ListArgs {}
 
 #[derive(clap::Args)]
+#[command(args_conflicts_with_subcommands = true)]
 #[command(about = "Add new totp", long_about = None)]
 pub(crate) struct AddArgs {
     #[arg()]

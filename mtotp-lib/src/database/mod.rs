@@ -5,13 +5,13 @@ use sea_orm::{ConnectionTrait, EntityTrait, Schema, Statement};
 use std::time::Duration;
 use tokio::sync::Mutex;
 
-pub(crate) mod registered;
+pub mod registered;
 
 static FOLDER: OnceCell<String> = OnceCell::new();
 
 static CONNECT: OnceCell<Mutex<DatabaseConnection>> = OnceCell::new();
 
-pub(crate) async fn init() {
+pub async fn init() {
     FOLDER.set(cfg_local_dir()).unwrap();
     init_database().await;
 }

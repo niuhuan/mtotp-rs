@@ -41,7 +41,6 @@ impl std::error::Error for Error {}
 
 pub type Result<A> = std::result::Result<A, Error>;
 
-
 #[derive(Default, Debug, Clone)]
 pub struct ErrorMessage {
     pub content: String,
