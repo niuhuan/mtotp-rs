@@ -12,4 +12,5 @@ tokio = { version = "1.42.0", features = ["io-std", "rt-multi-thread", "rt", "fs
 regex = "1.11.1"
 clap = { version = "4.5.23", features = ["derive"] }
 dialoguer = "0.11.0"
-mtotp-lib = { version = "0.1.2" }
+dirs = "5.0.1"
+mtotp-lib = { version = "0.1.3" }

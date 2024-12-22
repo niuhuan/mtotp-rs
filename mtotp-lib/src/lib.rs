@@ -1,12 +1,13 @@
 pub use error::*;
+pub use database::join_paths;
 use std::collections::HashMap;
 
 mod database;
 pub mod error;
 pub mod otp;
 
-pub async fn init() {
-    database::init().await;
+pub async fn init(folder: String) {
+    database::init(folder).await;
 }
 
 pub async fn print_codes() -> Vec<PrintCode> {

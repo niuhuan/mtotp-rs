@@ -11,8 +11,8 @@ static FOLDER: OnceCell<String> = OnceCell::new();
 
 static CONNECT: OnceCell<Mutex<DatabaseConnection>> = OnceCell::new();
 
-pub async fn init() {
-    FOLDER.set(cfg_local_dir()).unwrap();
+pub async fn init(folder: String) {
+    FOLDER.set(folder).unwrap();
     init_database().await;
 }
 
@@ -120,7 +120,7 @@ pub(crate) async fn create_index(
     create_index_a(db, table_name, columns, index_name, false).await
 }
 
-pub(crate) fn join_paths<P: AsRef<Path>>(paths: Vec<P>) -> String {
+pub fn join_paths<P: AsRef<Path>>(paths: Vec<P>) -> String {
     match paths.len() {
         0 => String::default(),
         _ => {
@@ -138,36 +138,3 @@ pub(crate) fn create_dir_if_not_exists(path: &String) {
         std::fs::create_dir_all(path).unwrap();
     }
 }
-
-
-/// 取配置文件目录
-#[cfg(target_os = "windows")]
-fn cfg_local_dir() -> String {
-    join_paths(vec![
-        dirs::home_dir().unwrap().to_str().unwrap(),
-        "AppData",
-        "Roaming",
-        "mtotp",
-    ])
-}
-
-/// 取配置文件目录
-#[cfg(target_os = "linux")]
-fn cfg_local_dir() -> String {
-    join_paths(vec![
-        dirs::home_dir().unwrap().to_str().unwrap(),
-        ".mtotp",
-    ])
-}
-
-/// 取配置文件目录
-#[cfg(target_os = "macos")]
-fn cfg_local_dir() -> String {
-    join_paths(vec![
-        dirs::home_dir().unwrap().to_str().unwrap(),
-        "Library",
-        "Application Support",
-        "mtotp",
-    ])
-}
-

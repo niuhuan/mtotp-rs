@@ -1,5 +1,6 @@
 extern crate core;
 
+use mtotp_lib::join_paths;
 use clap::Parser;
 use commands::*;
 use mtotp_lib::{save_register, save_url};
@@ -10,7 +11,7 @@ mod commands;
 #[tokio::main]
 async fn main() {
     let cli = MtotpCli::parse();
-    mtotp_lib::init().await;
+    mtotp_lib::init(cfg_local_dir()).await;
     match cli {
         MtotpCli::List(_) => print_codes().await,
         MtotpCli::Add(args) => register(args).await,
@@ -143,4 +144,36 @@ async fn rename() {
         mtotp_lib::rename(selected.uuid.as_str(), rename_to.as_str()).await;
         println!("Totp has been renamed");
     }
+}
+
+
+/// 取配置文件目录
+#[cfg(target_os = "windows")]
+fn cfg_local_dir() -> String {
+    join_paths(vec![
+        dirs::home_dir().unwrap().to_str().unwrap(),
+        "AppData",
+        "Roaming",
+        "mtotp",
+    ])
+}
+
+/// 取配置文件目录
+#[cfg(target_os = "linux")]
+fn cfg_local_dir() -> String {
+    join_paths(vec![
+        dirs::home_dir().unwrap().to_str().unwrap(),
+        ".mtotp",
+    ])
+}
+
+/// 取配置文件目录
+#[cfg(target_os = "macos")]
+fn cfg_local_dir() -> String {
+    join_paths(vec![
+        dirs::home_dir().unwrap().to_str().unwrap(),
+        "Library",
+        "Application Support",
+        "mtotp",
+    ])
 }
