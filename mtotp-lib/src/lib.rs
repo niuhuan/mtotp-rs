@@ -87,7 +87,7 @@ pub async fn save_register(label: String, secret: String, issuer: String) -> Res
     })
 }
 
-pub fn register_to_url(label: String, secret: String, issuer: String) -> Result<String> {
+pub fn register_to_url(label: &str, secret: &str, issuer: &str) -> Result<String> {
     let url = format!("otpauth://totp/{}?secret={}&issuer={}", label, secret, issuer);
     Ok(url)
 }

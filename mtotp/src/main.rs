@@ -5,7 +5,7 @@ use clap::Parser;
 use commands::*;
 use mtotp_lib::{save_register, save_url};
 use std::process::exit;
-
+use qrcode::render::unicode;
 mod commands;
 
 #[tokio::main]
@@ -17,6 +17,7 @@ async fn main() {
         MtotpCli::Add(args) => register(args).await,
         MtotpCli::Remove(_) => remove().await,
         MtotpCli::Rename(_) => rename().await,
+        MtotpCli::Qr(_) => qr().await,
     }
 }
 
@@ -147,6 +148,31 @@ async fn rename() {
 }
 
 
+async fn qr() {
+    let registered_codes = mtotp_lib::registered_codes().await;
+    let selected = dialoguer::Select::new()
+        .with_prompt("Choose totp to rename")
+        .items(
+            registered_codes
+                .iter()
+                .map(|x| x.label.as_str())
+                .collect::<Vec<&str>>()
+                .as_slice(),
+        )
+        .default(0)
+        .interact_opt()
+        .unwrap();
+    if let Some(selected) = selected {
+        let selected = registered_codes.get(selected).unwrap();
+        let url = mtotp_lib::register_to_url(selected.label.as_str(), selected.secret.as_str(), selected.issuer.as_str()).unwrap();
+        let code = qrcode::QrCode::new(url).unwrap();
+        let image = code.render::<unicode::Dense1x2>()
+        .dark_color(unicode::Dense1x2::Light)
+        .light_color(unicode::Dense1x2::Dark)
+        .build();
+        println!("{}", image);
+    }
+}
 /// 取配置文件目录
 #[cfg(target_os = "windows")]
 fn cfg_local_dir() -> String {

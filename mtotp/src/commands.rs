@@ -7,6 +7,7 @@ pub enum MtotpCli {
     Add(AddArgs),
     Remove(RemoveArgs),
     Rename(RenameArgs),
+    Qr(QrArgs),
 }
 
 #[derive(Debug, clap::Args)]
@@ -28,3 +29,7 @@ pub(crate) struct RemoveArgs {}
 #[derive(clap::Args)]
 #[command(about = "Rename a totp label", long_about = None)]
 pub(crate) struct RenameArgs {}
+
+#[derive(clap::Args)]
+#[command(about = "Show qr code of a totp", long_about = None)]
+pub(crate) struct QrArgs {}
