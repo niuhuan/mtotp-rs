@@ -6,6 +6,8 @@ mod database;
 pub mod error;
 pub mod otp;
 
+pub type Register = database::registered::Model;
+
 pub async fn init(folder: String) {
     database::init(folder).await;
 }
@@ -34,6 +36,10 @@ pub async fn print_codes() -> Vec<PrintCode> {
         };
     }
     codes
+}
+
+pub async fn registered_codes() -> Vec<Register> {
+    database::registered::find_all().await
 }
 
 pub async fn save_url(url: String) -> Result<PrintCode> {
@@ -79,6 +85,11 @@ pub async fn save_register(label: String, secret: String, issuer: String) -> Res
         label: registered.label,
         code,
     })
+}
+
+pub fn register_to_url(label: String, secret: String, issuer: String) -> Result<String> {
+    let url = format!("otpauth://totp/{}?secret={}&issuer={}", label, secret, issuer);
+    Ok(url)
 }
 
 pub async fn remove(uuid: &str) {
